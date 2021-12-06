@@ -7,6 +7,7 @@ import json
 if sys.version_info[0] < 3:
     import io
     open = io.open
+
 """
 Learn gender specific words
 
@@ -15,25 +16,34 @@ Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai
 2016
 """
 
-parser = argparse.ArgumentParser()
-parser.add_argument("embedding_filename", help="The name of the embedding")
-parser.add_argument("NUM_TRAINING", type=int)
-parser.add_argument("GENDER_SPECIFIC_SEED_WORDS")
-parser.add_argument("outfile")
+# parser = argparse.ArgumentParser()
+# parser.add_argument("embedding_filename", help="The name of the embedding")
+# parser.add_argument("NUM_TRAINING", type=int)
+# parser.add_argument("GENDER_SPECIFIC_SEED_WORDS")
+# parser.add_argument("outfile")
+# args = parser.parse_args()
 
-args = parser.parse_args()
+# embedding_filename = args.embedding_filename
+# NUM_TRAINING = args.NUM_TRAINING
+# GENDER_SPECIFIC_SEED_WORDS = args.GENDER_SPECIFIC_SEED_WORDS
+# OUTFILE = args.outfile
 
-embedding_filename = args.embedding_filename
-NUM_TRAINING = args.NUM_TRAINING
-GENDER_SPECIFIC_SEED_WORDS = args.GENDER_SPECIFIC_SEED_WORDS
-OUTFILE = args.outfile
+
+# set paths
+embedding_filename =  ("/work/dagw_wordembeddings/word2vec_model/DAGW-model.bin")
+GENDER_SPECIFIC_SEED_WORDS = ("/work/Exam/cool_programmer_tshirts/data/da_gender_specific_seed.json")
+NUM_TRAINING = 50
+OUTFILE = "outfile.json"
 
 with open(GENDER_SPECIFIC_SEED_WORDS, "r") as f:
     gender_seed = json.load(f)
 
+
+# load embedding
 print("Loading embedding...")
 E = WordEmbedding(embedding_filename)
 
+# print to terminal 
 print("Embedding has {} words.".format(len(E.words)))
 print("{} seed words from '{}' out of which {} are in the embedding.".format(
     len(gender_seed),
@@ -41,8 +51,13 @@ print("{} seed words from '{}' out of which {} are in the embedding.".format(
     len([w for w in gender_seed if w in E.words]))
 )
 
+
+# count how many unique (?) seed words are in the embedding - and only do this for words where i is below NUM_TRAINING (maybe the NUM training part does not work..) 
 gender_seed = set(w for i, w in enumerate(E.words) if w in gender_seed or (w.lower() in gender_seed and i<NUM_TRAINING))
+
+# go through gender seed 
 labeled_train = [(i, 1 if w in gender_seed else 0) for i, w in enumerate(E.words) if (i<NUM_TRAINING or w in gender_seed)]
+
 train_indices, train_labels = zip(*labeled_train)
 y = np.array(train_labels)
 X = np.array([E.vecs[i] for i in train_indices])
