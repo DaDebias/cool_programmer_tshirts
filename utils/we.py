@@ -49,7 +49,7 @@ class WordEmbedding:
         self.thresh = None
         self.max_words = None
         self.desc = fname
-        print("*** Reading data from " + fname)
+        #print("*** Reading data from " + fname)
         if fname.endswith(".bin"):
             import gensim.models
             model =gensim.models.KeyedVectors.load_word2vec_format(fname, binary=True)
@@ -64,13 +64,13 @@ class WordEmbedding:
                     s = line.split()
                     v = np.array([float(x) for x in s[1:]])
                     if len(vecs) and vecs[-1].shape!=v.shape:
-                        print("Got weird line", line)
+                        #print("Got weird line", line)
                         continue
     #                 v /= np.linalg.norm(v)
                     words.append(s[0])
                     vecs.append(v)
         self.vecs = np.array(vecs, dtype='float32')
-        print(self.vecs.shape)
+        #print(self.vecs.shape)
         self.words = words
         self.reindex()
         norms = np.linalg.norm(self.vecs, axis=1)
@@ -82,7 +82,7 @@ class WordEmbedding:
         self.n, self.d = self.vecs.shape
         assert self.n == len(self.words) == len(self.index)
         self._neighbors = None
-        print(self.n, "words of dimension", self.d, ":", ", ".join(self.words[:4] + ["..."] + self.words[-4:]))
+        #print(self.n, "words of dimension", self.d, ":", ", ".join(self.words[:4] + ["..."] + self.words[-4:]))
 
     def v(self, word):
         return self.vecs[self.index[word]]
