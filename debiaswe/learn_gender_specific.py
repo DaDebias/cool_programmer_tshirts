@@ -32,9 +32,10 @@ Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai
 # set paths
 embedding_filename =  ("/work/dagw_wordembeddings/word2vec_model/DAGW-model.bin")
 GENDER_SPECIFIC_SEED_WORDS = ("/work/Exam/cool_programmer_tshirts/data/da_gender_specific_seed.json")
-NUM_TRAINING = 50
-OUTFILE = "outfile.json"
+NUM_TRAINING = 10 # how many data points you want to be labeled 0 ie not gender specific 
+OUTFILE = "gender_specific_full.json"
 
+# read data
 with open(GENDER_SPECIFIC_SEED_WORDS, "r") as f:
     gender_seed = json.load(f)
 
@@ -48,19 +49,25 @@ print("Embedding has {} words.".format(len(E.words)))
 print("{} seed words from '{}' out of which {} are in the embedding.".format(
     len(gender_seed),
     GENDER_SPECIFIC_SEED_WORDS,
-    len([w for w in gender_seed if w in E.words]))
-)
+    len([w for w in gender_seed if w in E.words])))
 
-
-# count how many unique (?) seed words are in the embedding - and only do this for words where i is below NUM_TRAINING (maybe the NUM training part does not work..) 
+# take only the seed words that are in the embedding 
 gender_seed = set(w for i, w in enumerate(E.words) if w in gender_seed or (w.lower() in gender_seed and i<NUM_TRAINING))
 
-# go through gender seed 
+# loop through enumerate(E) ie index numbers + words
+# if the word (w) from seed word is in dictionary and i<NUM_training then save the index and a 1
+# otherwise write index number and 0
+# ie you label class 0 and class 1 based on the input word list
 labeled_train = [(i, 1 if w in gender_seed else 0) for i, w in enumerate(E.words) if (i<NUM_TRAINING or w in gender_seed)]
 
+# assign index number and labels to seperate variables
 train_indices, train_labels = zip(*labeled_train)
+
+# define train and test as arrays
 y = np.array(train_labels)
 X = np.array([E.vecs[i] for i in train_indices])
+
+# define penalization
 C = 1.0
 clf = LinearSVC(C=C, tol=0.0001)
 clf.fit(X, y)
