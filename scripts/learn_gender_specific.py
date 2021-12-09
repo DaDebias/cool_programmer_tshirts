@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 import sys
 import argparse
-from utils.we import *
+from we import *
 from sklearn.svm import LinearSVC
 import json
 if sys.version_info[0] < 3:
@@ -32,8 +32,8 @@ Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai
 # set paths
 embedding_filename =  ("/work/dagw_wordembeddings/word2vec_model/DAGW-model.bin")
 GENDER_SPECIFIC_SEED_WORDS = ("/work/Exam/cool_programmer_tshirts/data/da_gender_specific_seed.json")
-OUTFILE = "gender_specific_full.json"
-NUM_TRAINING = 12000
+OUTFILE = "/work/Exam/cool_programmer_tshirts/data/gender_specific_full.json"
+NUM_TRAINING = 50000
 
 with open(GENDER_SPECIFIC_SEED_WORDS, "r") as f:
     gender_seed = json.load(f)
