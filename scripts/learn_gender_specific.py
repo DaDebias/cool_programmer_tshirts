@@ -7,6 +7,7 @@ import json
 if sys.version_info[0] < 3:
     import io
     open = io.open
+from numpy import savetxt
 
 
 """
@@ -76,6 +77,10 @@ is_gender_specific = (E.vecs.dot(clf.coef_.T) > -clf.intercept_)
 full_gender_specific = list(set([w for label, w in zip(is_gender_specific, E.words)
                             if label]).union(gender_seed))
 full_gender_specific.sort(key=lambda w: E.index[w])
+
+
+# save gender direction 
+savetxt('/work/Exam/dk-weat/output/neutral_specific_difference.csv', direction, delimiter=',')
 
 with open(OUTFILE, "w") as f:
     json.dump(full_gender_specific, f)
