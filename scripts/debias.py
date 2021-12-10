@@ -20,7 +20,10 @@ def debias(E, gender_specific_words, definitional, equalize):
     
     # define gender direction
     gender_direction = we.doPCA(definitional, E).components_[0]
-    
+
+    # save gender direction (to print most extreme job professions)
+    np.savetxt('/work/Exam/dk-weat/output/gender_direction.csv', gender_direction, delimiter=',')
+
     # load full genderspecific
     specific_set = set(gender_specific_words)
 
@@ -103,3 +106,4 @@ if __name__ == "__main__":
         E.save(debiased_filename)
 
     print("\n\nDone!\n")
+
