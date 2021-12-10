@@ -2,6 +2,7 @@ from __future__ import print_function, division
 import re
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 import scipy.sparse
 from sklearn.decomposition import PCA
 if sys.version_info[0] < 3:
@@ -241,7 +242,8 @@ def doPCA(pairs, embedding, num_components = 10):
     matrix = np.array(matrix)
     pca = PCA(n_components = num_components)
     pca.fit(matrix)
-    # bar(range(num_components), pca.explained_variance_ratio_)
+    plt.bar(range(num_components), pca.explained_variance_ratio_)
+    plt.show()
     return pca
 
 
