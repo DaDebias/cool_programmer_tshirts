@@ -19,7 +19,10 @@ Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai
 def debias(E, gender_specific_words, definitional, equalize):
     
     # define gender direction
-    gender_direction = we.doPCA(definitional, E).components_[0]
+
+    pca = we.doPCA(definitional, E).components_[0]
+    pca = we.doPCA(definitional, E).components_[0]
+    gender_direction = pca.components_[0]
 
     # save gender direction (to print most extreme job professions)
     np.savetxt('/work/Exam/dk-weat/output/gender_direction.csv', gender_direction, delimiter=',')
@@ -52,6 +55,28 @@ def debias(E, gender_specific_words, definitional, equalize):
     
     # normalize Embedding
     E.normalize()
+
+
+
+def debias_no_equalize(E, gender_specific_words, definitional, equalize):
+    
+    # define gender direction
+    gender_direction = we.doPCA(definitional, E).components_[0]
+
+    # save gender direction (to print most extreme job professions)
+    np.savetxt('/work/Exam/dk-weat/output/gender_direction.csv', gender_direction, delimiter=',')
+
+    # load full genderspecific
+    specific_set = set(gender_specific_words)
+
+    # neutralize: go through entire wordembedding - remove  gender direction from words not in full gender specific
+    for i, w in enumerate(E.words):
+        if w not in specific_set:
+            E.vecs[i] = we.drop(E.vecs[i], gender_direction)
+    
+    # normalize values in Embedding
+    E.normalize()
+
 
 
 if __name__ == "__main__":
@@ -96,14 +121,20 @@ if __name__ == "__main__":
 
     # debias word embedding
     print("Debiasing...")
-    debias(E, gender_specific_words, defs, equalize_pairs)
+    
+    # debias model: neutralize
+    debias_no_equalize(E, gender_specific_words, defs, equalize_pairs)
+
+    # debias model: neutralize + equalize
+    #debias(E, gender_specific_words, defs, equalize_pairs)
+
 
     # save debased
     print("Saving to file...")
     if embedding_filename[-4:] == debiased_filename[-4:] == ".bin":
-        E.save_w2v(debiased_filename)
+        E.save_w2v(f"no_eq_{debiased_filename}")
     else:
-        E.save(debiased_filename)
+        E.save(f"no_eq_{debiased_filename}")
 
     print("\n\nDone!\n")
 
