@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 import sys
+sys.path.append("..")
 import argparse
 from we import *
 from sklearn.svm import LinearSVC
@@ -30,11 +31,12 @@ Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai
 # GENDER_SPECIFIC_SEED_WORDS = args.GENDER_SPECIFIC_SEED_WORDS
 # OUTFILE = args.outfile
 
+
 # set paths
-embedding_filename =  ("/work/dagw_wordembeddings/word2vec_model/DAGW-model.bin")
-GENDER_SPECIFIC_SEED_WORDS = ("/work/Exam/cool_programmer_tshirts/data/da_gender_specific_seed.json")
-OUTFILE = "/work/Exam/cool_programmer_tshirts/data/gender_specific_full.json"
+embedding_filename =  os.path.join("/work","dagw_wordembeddings", "word2vec_model","DAGW-model.bin")
 NUM_TRAINING = 50000
+GENDER_SPECIFIC_SEED_WORDS = os.path.join("..", "data", "da_gender_specific_seed.json")
+OUTFILE = os.path.join("..", "data", "gender_specific_full.json")
 
 with open(GENDER_SPECIFIC_SEED_WORDS, "r") as f:
     gender_seed = json.load(f)
