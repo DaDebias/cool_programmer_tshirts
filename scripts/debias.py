@@ -6,7 +6,7 @@ import json
 import numpy as np
 if sys.version_info[0] < 3:
     import io
-    open = io.open
+    open = io.open 
 """
 Hard-debias embedding
 
